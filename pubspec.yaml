@@ -1,0 +1,32 @@
+name: sumanager
+description: SteamUnlocked Launcher - browse, download, extract and organize your games.
+publish_to: "none"
+version: 0.4.2+1
+environment:
+  sdk: ^3.9.0
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  http: ^1.2.0
+  shared_preferences: ^2.3.0
+  path_provider: ^2.1.0
+  window_manager: ^0.4.3
+  url_launcher: ^6.3.0
+  crypto: ^3.0.5
+  archive: ^3.6.1
+  file_picker: ^8.1.0
+  package_info_plus: ^8.1.0
+  window_size:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding.git
+      path: plugins/window_size
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+  generate: true
