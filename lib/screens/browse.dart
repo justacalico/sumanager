@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n_ext.dart';
 import '../models.dart';
 import '../services/api.dart';
 import '../services/downloads.dart';
@@ -34,7 +35,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
       games = await Api.fetchCatalog();
       views = await Api.fetchPopularity();
     } catch (e) {
-      error = 'Could not load the catalog. Check your connection and retry.';
+      error = 'x';
     }
     if (mounted) setState(() => loading = false);
   }
@@ -64,9 +65,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
     if (loading) return const Center(child: CircularProgressIndicator());
     if (error != null) {
       return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(error!, textAlign: TextAlign.center),
+        Text(context.l.couldNotLoadTheCatalogCheckYourConnectionAndRetry, textAlign: TextAlign.center),
         const SizedBox(height: 12),
-        FilledButton(onPressed: _load, child: const Text('Retry')),
+        FilledButton(onPressed: _load, child: Text(context.l.retry)),
       ]));
     }
     final list = filtered;
@@ -80,7 +81,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
               child: TextField(
                 controller: _ctrl,
                 decoration: InputDecoration(
-                  hintText: 'Search games…', isDense: true, prefixIcon: const Icon(Icons.search, size: 20),
+                  hintText: context.l.searchGames, isDense: true, prefixIcon: const Icon(Icons.search, size: 20),
                   suffixIcon: search.isEmpty ? null : IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () { _ctrl.clear(); setState(() => search = ''); }),
                   border: const OutlineInputBorder(),
                 ),
@@ -88,30 +89,30 @@ class _BrowseScreenState extends State<BrowseScreen> {
               ),
             ),
             DropdownButton<String>(
-              value: sort, underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: 'recent', child: Text('Recently added')),
-                DropdownMenuItem(value: 'views', child: Text('Most viewed')),
-                DropdownMenuItem(value: 'name', child: Text('Name A–Z')),
-                DropdownMenuItem(value: 'size', child: Text('Size')),
+              value: sort, underline: SizedBox(),
+              items: [
+                DropdownMenuItem(value: 'recent', child: Text(context.l.recentlyAdded)),
+                DropdownMenuItem(value: 'views', child: Text(context.l.mostViewed)),
+                DropdownMenuItem(value: 'name', child: Text(context.l.nameAZ)),
+                DropdownMenuItem(value: 'size', child: Text(context.l.sizeLabel)),
               ],
               onChanged: (v) => setState(() => sort = v!),
             ),
             if (categories.isNotEmpty)
               DropdownButton<String?>(
-                value: category, hint: const Text('Category'), underline: const SizedBox(),
-                items: [const DropdownMenuItem(value: null, child: Text('All categories')),
+                value: category, hint: Text(context.l.category), underline: const SizedBox(),
+                items: [DropdownMenuItem(value: null, child: Text(context.l.allCategories)),
                   ...categories.map((c) => DropdownMenuItem(value: c, child: Text(c)))],
                 onChanged: (v) => setState(() => category = v),
               ),
-            TextButton.icon(icon: const Icon(Icons.clear_all, size: 18), label: const Text('Clear filters'),
+            TextButton.icon(icon: Icon(Icons.clear_all, size: 18), label: Text(context.l.clearFilters),
               onPressed: () { _ctrl.clear(); setState(() { search = ''; category = null; sort = 'recent'; sizeRange = const RangeValues(0, 200); }); }),
           ]),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(children: [
-            Text('Size: ${_fmt(sizeRange.start * 1e9)} – ${sizeRange.end >= 200 ? '∞' : _fmt(sizeRange.end * 1e9)}', style: const TextStyle(fontSize: 12)),
+            Text('${context.l.size}${_fmt(sizeRange.start * 1e9)} – ${sizeRange.end >= 200 ? '∞' : _fmt(sizeRange.end * 1e9)}', style: const TextStyle(fontSize: 12)),
             Expanded(child: RangeSlider(values: sizeRange, min: 0, max: 200, onChanged: (v) => setState(() => sizeRange = v))),
             Text('${list.length} games', style: const TextStyle(fontSize: 12)),
           ]),
@@ -198,16 +199,16 @@ class GameDialog extends StatelessWidget {
         if (game.coverUrl.isNotEmpty)
           ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.network(game.coverUrl, height: 180, width: 320, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const SizedBox())),
         const SizedBox(height: 12),
-        Text('Size: ${GameCard.fmtBytes(game.fileSize)}'),
+        Text('${context.l.size}${GameCard.fmtBytes(game.fileSize)}'),
         if (game.categories.isNotEmpty) Text('Categories: ${game.categories.join(', ')}'),
       ]),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l.close)),
         AnimatedBuilder(
           animation: dm,
           builder: (_, __) => FilledButton.icon(
             icon: const Icon(Icons.download),
-            label: Text(dm.isQueuedOrDone(game.id) ? 'In Downloads' : 'Download'),
+            label: Text(dm.isQueuedOrDone(game.id) ? context.l.inDownloads : context.l.download),
             onPressed: dm.isQueuedOrDone(game.id)
                 ? null
                 : () async {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../l10n_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
@@ -6,20 +7,19 @@ import 'package:window_manager/window_manager.dart';
 bool get isDesktop => !kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
 
 class AppShell extends StatelessWidget {
-  final String title;
   final int page;
   final ValueChanged<int> onNavigate;
   final Widget child;
-  const AppShell({super.key, required this.title, required this.page, required this.onNavigate, required this.child});
+  const AppShell({super.key, required this.page, required this.onNavigate, required this.child});
 
-  static const _dests = [
-    (Icons.storefront_outlined, 'Browse'),
-    (Icons.download_outlined, 'Downloads'),
-    (Icons.videogame_asset_outlined, 'Library'),
-    (Icons.favorite_border, 'Favorites'),
-    (Icons.person_outline, 'Account'),
-    (Icons.settings_outlined, 'Settings'),
-    (Icons.help_outline, 'Help'),
+  static List<(IconData, String)> _dests(BuildContext context) => [
+    (Icons.storefront_outlined, context.l.browse),
+    (Icons.download_outlined, context.l.downloads),
+    (Icons.videogame_asset_outlined, context.l.library),
+    (Icons.favorite_border, context.l.favorites),
+    (Icons.person_outline, context.l.account),
+    (Icons.settings_outlined, context.l.settings),
+    (Icons.help_outline, context.l.help),
   ];
 
   @override
@@ -38,7 +38,7 @@ class AppShell extends StatelessWidget {
                     child: ListView(
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                       children: [
-                        for (var i = 0; i < _dests.length; i++)
+                        for (var i = 0; i < _dests(context).length; i++)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 1),
                             child: Material(
@@ -47,8 +47,8 @@ class AppShell extends StatelessWidget {
                               child: ListTile(
                                 dense: true,
                                 shape: const StadiumBorder(),
-                                leading: Icon(_dests[i].$1, size: 20),
-                                title: Text(_dests[i].$2),
+                                leading: Icon(_dests(context)[i].$1, size: 20),
+                                title: Text(_dests(context)[i].$2),
                                 selected: page == i,
                                 selectedTileColor: Theme.of(context).colorScheme.secondaryContainer,
                                 hoverColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
@@ -102,8 +102,8 @@ class TopBar extends StatelessWidget {
                       windowManager.maximize();
                     }
                   },
-                  child: const Center(
-                    child: Text('SteamUnlocked Launcher', style: TextStyle(fontSize: 13, color: Color(0xFF9C9CAB))),
+                  child: Center(
+                    child: Text(context.l.steamunlockedLauncher, style: TextStyle(fontSize: 13, color: Color(0xFF9C9CAB))),
                   ),
                 ),
               ),

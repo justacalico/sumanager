@@ -19,7 +19,6 @@ class SuManagerApp extends StatefulWidget {
 
 class _SuManagerAppState extends State<SuManagerApp> {
   int _page = 0;
-  static const titles = ['Browse', 'Downloads', 'Library', 'Favorites', 'Account', 'Settings', 'Help'];
 
   @override
   void initState() {
@@ -68,7 +67,6 @@ class _SuManagerAppState extends State<SuManagerApp> {
               setState(() {});
             })
           : AppShell(
-              title: titles[_page],
               page: _page,
               onNavigate: (i) => setState(() => _page = i),
               child: switch (_page) {

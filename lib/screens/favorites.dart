@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n_ext.dart';
 import '../services/library.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -10,7 +11,7 @@ class FavoritesScreen extends StatelessWidget {
       animation: lib,
       builder: (_, __) {
         final list = lib.all.where((g) => lib.isFavorite(g.gameKey)).toList();
-        if (list.isEmpty) return const Center(child: Text('No favorites yet. Tap the heart on a library game.'));
+        if (list.isEmpty) return Center(child: Text(context.l.noFavoritesYetTapTheHeartOnALibraryGame));
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: list.length,
@@ -23,12 +24,12 @@ class FavoritesScreen extends StatelessWidget {
                 subtitle: Text(g.folderPath, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
                 trailing: IconButton(
                   icon: const Icon(Icons.heart_broken_outlined),
-                  tooltip: 'Remove from favorites',
+                  tooltip: context.l.removeFromFavorites,
                   onPressed: () {
                     lib.setFavorite(g.gameKey, false);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: const Text('Removed from favorites'),
-                      action: SnackBarAction(label: 'Undo', onPressed: () => lib.setFavorite(g.gameKey, true)),
+                      content: Text(context.l.removedFromFavorites),
+                      action: SnackBarAction(label: context.l.undo, onPressed: () => lib.setFavorite(g.gameKey, true)),
                     ));
                   },
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n_ext.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/settings.dart';
 
@@ -15,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             const Icon(Icons.rocket_launch_outlined, size: 64),
             const SizedBox(height: 16),
-            const Text('SteamUnlocked Launcher', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+            Text(context.l.steamunlockedLauncher, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
             const Text(
               'Browse the catalog, download games with resumable parallel chunks, extract them automatically and organize everything in one library.',
@@ -24,14 +25,14 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             FilledButton.icon(
               icon: const Icon(Icons.folder_open),
-              label: const Text('Choose a download folder'),
+              label: Text(context.l.chooseADownloadFolder),
               onPressed: () async {
-                final d = await FilePicker.platform.getDirectoryPath(dialogTitle: 'Choose a download folder');
+                final d = await FilePicker.platform.getDirectoryPath(dialogTitle: context.l.chooseADownloadFolder);
                 if (d != null) Settings.instance.setDownloadPath(d);
                 onDone();
               },
             ),
-            TextButton(onPressed: onDone, child: const Text('Skip for now')),
+            TextButton(onPressed: onDone, child: Text(context.l.skipForNow)),
           ]),
         ),
       ),

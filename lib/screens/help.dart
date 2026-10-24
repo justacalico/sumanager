@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../l10n_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,41 +12,41 @@ class HelpScreen extends StatelessWidget {
     return ListView(padding: const EdgeInsets.all(24), children: [
       const Text('Missing DLL or game won\'t launch?', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
-      const Text('Most Windows games need Visual C++, DirectX or .NET runtimes. Install them once and every game benefits.', style: TextStyle(fontSize: 13)),
+      Text(context.l.mostWindowsGamesNeedVisualCDirectxOrNetRuntimesInstallThemOnceAndEveryGameBenefits, style: TextStyle(fontSize: 13)),
       const SizedBox(height: 12),
       // coverage:ignore-start
       if (!kIsWeb && Platform.isWindows)
-        FilledButton.icon(icon: const Icon(Icons.build), label: const Text('Install all runtimes'), onPressed: () => _runtimes(context))
+        FilledButton.icon(icon: Icon(Icons.build), label: Text(context.l.installAllRuntimes), onPressed: () => _runtimes(context))
       // coverage:ignore-end
       else
-        const Text('Runtime installers are a Windows-only feature.', style: TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(context.l.runtimeInstallersAreAWindowsOnlyFeature, style: TextStyle(fontSize: 12, color: Colors.grey)),
       const SizedBox(height: 24),
       // coverage:ignore-start
       if (!kIsWeb && Platform.isWindows) ...[
-        const Text('Windows Defender', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+        Text(context.l.windowsDefender, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
         const SizedBox(height: 8),
-        const Text('Defender can slow down or break downloads. Exclude your download folder from scanning.', style: TextStyle(fontSize: 13)),
+        Text(context.l.defenderCanSlowDownOrBreakDownloadsExcludeYourDownloadFolderFromScanning, style: TextStyle(fontSize: 13)),
         const SizedBox(height: 12),
-        FilledButton.tonalIcon(icon: const Icon(Icons.shield_outlined), label: const Text('Exclude download folder'), onPressed: () => _defender(context)),
+        FilledButton.tonalIcon(icon: Icon(Icons.shield_outlined), label: Text(context.l.excludeDownloadFolder), onPressed: () => _defender(context)),
         const SizedBox(height: 24),
       ],
       // coverage:ignore-end
-      const Text('Running Windows games here', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+      Text(context.l.runningWindowsGamesHere, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
       if (!kIsWeb && Platform.isLinux)
-        const Text('Games launch through Steam Proton when installed, or Wine as a fallback. Install Proton from Steam for the best results.', style: TextStyle(fontSize: 13)),
+        Text(context.l.gamesLaunchThroughSteamProtonWhenInstalledOrWineAsAFallbackInstallProtonFromSteamForTheBestResults, style: TextStyle(fontSize: 13)),
       // coverage:ignore-start
       if (!kIsWeb && Platform.isMacOS)
-        const Text('macOS has no native .exe support. Point Settings to a Wine build from CrossOver, the Game Porting Toolkit or Whisky, and games will launch through it.', style: TextStyle(fontSize: 13)),
+        Text(context.l.macosHasNoNativeExeSupportPointSettingsToAWineBuildFromCrossoverTheGamePortingToolkitOrWhiskyAndGamesWillLaunchThroughIt, style: TextStyle(fontSize: 13)),
       if (!kIsWeb && Platform.isWindows)
-        const Text('You are on Windows — games just run. Nothing extra needed.', style: TextStyle(fontSize: 13)),
+        Text(context.l.youAreOnWindowsGamesJustRunNothingExtraNeeded, style: TextStyle(fontSize: 13)),
       // coverage:ignore-end
       const SizedBox(height: 24),
-      const Text('Links', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+      Text(context.l.links, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
       Wrap(spacing: 8, children: [
-        TextButton(onPressed: () => launchUrl(Uri.parse('https://steamunlocked.org')), child: const Text('steamunlocked.org')),
-        TextButton(onPressed: () => launchUrl(Uri.parse('https://uploadhaven.com')), child: const Text('uploadhaven.com')),
+        TextButton(onPressed: () => launchUrl(Uri.parse('https://steamunlocked.org')), child: Text(context.l.steamunlockedOrg)),
+        TextButton(onPressed: () => launchUrl(Uri.parse('https://uploadhaven.com')), child: Text(context.l.uploadhavenCom)),
       ]),
     ]);
   }
@@ -60,11 +61,11 @@ class HelpScreen extends StatelessWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Install runtimes'),
-        content: const Text('This downloads the official Microsoft installers for Visual C++ and DirectX and opens them for you. Continue?'),
+        title: Text(context.l.installRuntimes),
+        content: Text(context.l.thisDownloadsTheOfficialMicrosoftInstallersForVisualCAndDirectxAndOpensThemForYouContinue),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Install')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.l.cancel)),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(context.l.install)),
         ],
       ),
     );
@@ -73,7 +74,7 @@ class HelpScreen extends StatelessWidget {
       await launchUrl(Uri.parse(u));
     }
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Opened the official installers in your browser.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l.openedTheOfficialInstallersInYourBrowser)));
     }
   }
   // coverage:ignore-end
@@ -84,7 +85,7 @@ class HelpScreen extends StatelessWidget {
     try {
       await Process.run('powershell', ['-Command', 'Add-MpPreference -ExclusionPath (Get-Content "\$env:APPDATA\\sumanager\\download_path.txt" -ErrorAction SilentlyContinue)']);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Exclusion request sent to Windows Defender.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l.exclusionRequestSentToWindowsDefender)));
       }
     } catch (_) {}
   }

@@ -22,6 +22,7 @@ import 'package:sumanager/services/runner.dart';
 import 'package:sumanager/services/settings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:sumanager/widgets/shell.dart';
+import 'package:sumanager/l10n/app_localizations.dart';
 import 'helpers.dart';
 
 Future<void> settle(WidgetTester t) async {
@@ -41,6 +42,8 @@ void _noop(int _) {}
 
 Widget wrap(Widget child) => MaterialApp(
       theme: ThemeData(fontFamily: 'Noto Sans', brightness: Brightness.dark, useMaterial3: true),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: child),
     );
 
@@ -176,6 +179,15 @@ void main() {
     await t.tap(find.byIcon(Icons.favorite_border).first);
     await t.pump();
     expect(lib.isFavorite('k1'), true);
+    lib.collections.clear();
+    await t.tap(find.byType(PopupMenuButton<String>).first);
+    await t.pumpAndSettle();
+    await t.tap(find.text('Collections'));
+    await t.pumpAndSettle();
+    expect(find.text('No collections yet.'), findsOneWidget);
+    await t.tap(find.text('Cancel'));
+    await t.pumpAndSettle();
+    lib.addCollection('RPGs');
     await t.tap(find.byType(PopupMenuButton<String>).first);
     await t.pumpAndSettle();
     await t.tap(find.text('Collections'));
@@ -351,7 +363,7 @@ void main() {
   });
 
   testWidgets('topbar window controls and hover', (t) async {
-    await t.pumpWidget(wrap(const AppShell(title: 'T', page: 0, onNavigate: _noop, child: SizedBox())));
+    await t.pumpWidget(wrap(const AppShell(page: 0, onNavigate: _noop, child: SizedBox())));
     await t.pumpAndSettle();
     final circles = find.descendant(
       of: find.byType(TopBar),

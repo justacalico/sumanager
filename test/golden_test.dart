@@ -16,6 +16,7 @@ import 'package:sumanager/services/api.dart';
 import 'package:sumanager/services/downloads.dart';
 import 'package:sumanager/services/library.dart';
 import 'package:sumanager/services/settings.dart';
+import 'package:sumanager/l10n/app_localizations.dart';
 import 'helpers.dart';
 
 ThemeData theme() => ThemeData(
@@ -29,7 +30,7 @@ ThemeData theme() => ThemeData(
 
 Future<void> snap(WidgetTester t, Widget child, String name) async {
   await t.binding.setSurfaceSize(const Size(1280, 800));
-  await t.pumpWidget(MaterialApp(theme: theme(), home: Scaffold(body: child)));
+  await t.pumpWidget(MaterialApp(theme: theme(), localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, home: Scaffold(body: child)));
   await t.pumpAndSettle();
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$name.png'));
 }

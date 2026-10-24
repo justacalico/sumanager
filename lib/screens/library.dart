@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,17 +35,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
               SizedBox(
                 width: 300,
                 child: TextField(
-                  decoration: const InputDecoration(hintText: 'Search library…', isDense: true, prefixIcon: Icon(Icons.search, size: 20), border: OutlineInputBorder()),
+                  decoration: InputDecoration(hintText: context.l.searchLibrary, isDense: true, prefixIcon: Icon(Icons.search, size: 20), border: OutlineInputBorder()),
                   onChanged: (v) => setState(() => search = v),
                 ),
               ),
-              FilledButton.tonalIcon(icon: const Icon(Icons.add, size: 18), label: const Text('Scan for Games'), onPressed: () => _scan(context)),
-              FilledButton.tonalIcon(icon: const Icon(Icons.create_new_folder_outlined, size: 18), label: const Text('Add Game'), onPressed: () => _addCustom(context)),
-              FilledButton.tonalIcon(icon: const Icon(Icons.collections_bookmark_outlined, size: 18), label: const Text('New Collection'), onPressed: () => _newCollection(context)),
+              FilledButton.tonalIcon(icon: Icon(Icons.add, size: 18), label: Text(context.l.scanForGames), onPressed: () => _scan(context)),
+              FilledButton.tonalIcon(icon: Icon(Icons.create_new_folder_outlined, size: 18), label: Text(context.l.addGame), onPressed: () => _addCustom(context)),
+              FilledButton.tonalIcon(icon: Icon(Icons.collections_bookmark_outlined, size: 18), label: Text(context.l.newCollection), onPressed: () => _newCollection(context)),
               if (lib.collections.isNotEmpty)
                 DropdownButton<String?>(
-                  value: collection, hint: const Text('All games'), underline: const SizedBox(),
-                  items: [const DropdownMenuItem(value: null, child: Text('All games')), ...lib.collections.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name)))],
+                  value: collection, hint: Text(context.l.allGames), underline: const SizedBox(),
+                  items: [DropdownMenuItem(value: null, child: Text(context.l.allGames)), ...lib.collections.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name)))],
                   onChanged: (v) => setState(() => collection = v),
                 ),
               Text('${list.length} games', style: const TextStyle(fontSize: 12)),
@@ -52,7 +53,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
           ),
           Expanded(
             child: list.isEmpty
-                ? const Center(child: Text('Your library is empty. Download games or scan a folder.'))
+                ? Center(child: Text(context.l.yourLibraryIsEmptyDownloadGamesOrScanAFolder))
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: list.length,
@@ -71,17 +72,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ? ClipRRect(borderRadius: BorderRadius.circular(4), child: Image.network(g.coverUrl!, width: 44, height: 56, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.videogame_asset)))
             : const Icon(Icons.videogame_asset, size: 36),
         title: Text(g.title),
-        subtitle: Text(g.exePath == null ? 'No executable set' : g.exePath!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
+        subtitle: Text(g.exePath == null ? context.l.noExecutableSet : g.exePath!, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
         trailing: Wrap(spacing: 4, children: [
-          IconButton(icon: const Icon(Icons.play_arrow), tooltip: 'Play', onPressed: () => _play(context, g)),
-          IconButton(icon: Icon(lib.isFavorite(g.gameKey) ? Icons.favorite : Icons.favorite_border, size: 20), tooltip: 'Favorite', onPressed: () => lib.setFavorite(g.gameKey, !lib.isFavorite(g.gameKey))),
+          IconButton(icon: const Icon(Icons.play_arrow), tooltip: context.l.play, onPressed: () => _play(context, g)),
+          IconButton(icon: Icon(lib.isFavorite(g.gameKey) ? Icons.favorite : Icons.favorite_border, size: 20), tooltip: context.l.favorite, onPressed: () => lib.setFavorite(g.gameKey, !lib.isFavorite(g.gameKey))),
           PopupMenuButton<String>(
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'folder', child: Text('Open folder')),
-              PopupMenuItem(value: 'exe', child: Text('Set executable')),
-              PopupMenuItem(value: 'collections', child: Text('Collections')),
-              PopupMenuItem(value: 'uninstall', child: Text('Uninstall')),
-              PopupMenuItem(value: 'remove', child: Text('Remove from library')),
+            itemBuilder: (_) => [
+              PopupMenuItem(value: 'folder', child: Text(context.l.openFolder)),
+              PopupMenuItem(value: 'exe', child: Text(context.l.setExecutable)),
+              PopupMenuItem(value: 'collections', child: Text(context.l.collections)),
+              PopupMenuItem(value: 'uninstall', child: Text(context.l.uninstall)),
+              PopupMenuItem(value: 'remove', child: Text(context.l.removeFromLibrary)),
             ],
             onSelected: (v) => _menu(context, lib, g, v),
           ),
@@ -104,13 +105,13 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   String _runnerHint() {
-    if (Theme.of(context).platform == TargetPlatform.linux) return 'No Proton/Wine found. Install Proton via Steam or configure a runner in Settings.';
-    if (Theme.of(context).platform == TargetPlatform.macOS) return 'Install CrossOver or set a Wine/whisky binary in Settings to play Windows games.';
-    return 'Could not launch the game.';
+    if (Theme.of(context).platform == TargetPlatform.linux) return context.l.noProtonWineFoundInstallProtonViaSteamOrConfigureARunnerInSettings;
+    if (Theme.of(context).platform == TargetPlatform.macOS) return context.l.installCrossoverOrSetAWineWhiskyBinaryInSettingsToPlayWindowsGames;
+    return context.l.couldNotLaunchTheGame;
   }
 
   Future<void> _pickExe(BuildContext context, LibraryGame g) async {
-    final r = await FilePicker.platform.pickFiles(dialogTitle: 'Choose the game executable');
+    final r = await FilePicker.platform.pickFiles(dialogTitle: context.l.chooseTheGameExecutable);
     if (r != null && r.files.single.path != null) {
       g.exePath = r.files.single.path!;
       LibraryStore.instance.touch();
@@ -134,12 +135,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   Future<void> _scan(BuildContext context) async {
-    final dir = await FilePicker.platform.getDirectoryPath(dialogTitle: 'Choose a folder to scan for games');
+    final dir = await FilePicker.platform.getDirectoryPath(dialogTitle: context.l.chooseAFolderToScanForGames);
     if (dir == null) return;
     final exes = await GameScanner.findExecutables(Directory(dir));
     if (!context.mounted) return;
     if (exes.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No game executables found in that folder.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l.noGameExecutablesFoundInThatFolder)));
       return;
     }
     final lib = LibraryStore.instance;
@@ -157,15 +158,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   Future<void> _newCollection(BuildContext context) async {
     final ctrl = TextEditingController();
+    final allGames = context.l.allGames;
     final name = await showDialog<String>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('New collection'),
-        content: TextField(controller: ctrl, maxLength: 48, decoration: const InputDecoration(hintText: 'Collection name')),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(context, ctrl.text.trim()), child: const Text('Create'))],
+        title: Text(context.l.newCollection),
+        content: TextField(controller: ctrl, maxLength: 48, decoration: InputDecoration(hintText: context.l.collectionName)),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l.cancel)), FilledButton(onPressed: () => Navigator.pop(context, ctrl.text.trim()), child: Text(context.l.create))],
       ),
     );
-    if (name != null && name.isNotEmpty && name != 'All games') {
+    if (name != null && name.isNotEmpty && name != allGames) {
       LibraryStore.instance.addCollection(name);
     }
   }
@@ -179,11 +181,11 @@ class _CollectionsDialog extends StatelessWidget {
     final lib = LibraryStore.instance;
     final selected = lib.collections.where((c) => c.gameKeys.contains(game.gameKey)).map((c) => c.id).toSet();
     return StatefulBuilder(builder: (context, setState) => AlertDialog(
-          title: Text('Collections for ${game.title}'),
+          title: Text('${context.l.collectionsFor}${game.title}'),
           content: SizedBox(
             width: 320,
             child: lib.collections.isEmpty
-                ? const Text('No collections yet.')
+                ? Text(context.l.noCollectionsYet)
                 : ListView(shrinkWrap: true, children: [
                     for (final c in lib.collections)
                       CheckboxListTile(
@@ -194,8 +196,8 @@ class _CollectionsDialog extends StatelessWidget {
                   ]),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-            FilledButton(onPressed: () { lib.setGameCollections(game.gameKey, selected.toList()); Navigator.pop(context); }, child: const Text('Save')),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l.cancel)),
+            FilledButton(onPressed: () { lib.setGameCollections(game.gameKey, selected.toList()); Navigator.pop(context); }, child: Text(context.l.save)),
           ],
         ));
   }

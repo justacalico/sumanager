@@ -18,10 +18,13 @@ import 'package:sumanager/services/downloads.dart';
 import 'package:sumanager/services/library.dart';
 import 'package:sumanager/services/settings.dart';
 import 'package:sumanager/widgets/shell.dart';
+import 'package:sumanager/l10n/app_localizations.dart';
 import 'helpers.dart';
 
 Widget wrap(Widget child) => MaterialApp(
       theme: ThemeData(fontFamily: 'Noto Sans', brightness: Brightness.dark, useMaterial3: true),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: child),
     );
 
@@ -57,8 +60,7 @@ void main() {
   testWidgets('shell navigates to each page', (t) async {
     Settings.instance.welcomeShown = true;
     var page = 0;
-    await t.pumpWidget(wrap(AppShell(
-      title: 'Browse', page: page, onNavigate: (i) => page = i,
+    await t.pumpWidget(wrap(AppShell(page: page, onNavigate: (i) => page = i,
       child: const SizedBox(),
     )));
     for (final label in ['Downloads', 'Library', 'Favorites', 'Account', 'Settings', 'Help']) {
