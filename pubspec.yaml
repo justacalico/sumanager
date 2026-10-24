@@ -1,7 +1,7 @@
 name: sumanager
 description: SteamUnlocked Launcher - browse, download, extract and organize your games.
 publish_to: "none"
-version: 0.4.2+1
+version: 1.0.0+1
 environment:
   sdk: ^3.9.0
 dependencies:

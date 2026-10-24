@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:url_launcher_platform_interface/link.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/painting.dart';
 
 Directory? _tmp;
 bool _max = false;

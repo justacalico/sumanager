@@ -7,7 +7,7 @@ class Api {
   static const suBase = 'https://steamunlocked.org';
   static const uhBase = 'https://api.uploadhaven.com';
   static const launcherKey = 'su-launcher-v1-8f3k9x2m7pqw4';
-  static const launcherVersion = '0.4.2';
+  static const launcherVersion = '1.0.0';
 
   static http.Client Function()? clientFactory;
   static http.Client newClient() => clientFactory?.call() ?? http.Client();

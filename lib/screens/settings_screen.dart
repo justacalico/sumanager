@@ -19,7 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _checking = false;
   String? _updateMsg;
   UpdateInfo? _update;
-  String _version = '0.4.2';
+  String _version = '1.0.0';
 
   @override
   void initState() {

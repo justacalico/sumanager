@@ -1,3 +1,24 @@
+from_latest_tag = true
+ignore_merge_commits = true
+tag_prefix = "v"
+branch_whitelist = ["master", "main"]
+
+pre_bump_hooks = [
+  "sed -i 's/^version:.*/version: {{version}}+{{version_minor}}/g' pubspec.yaml",
+  "sed -i \"s/launcherVersion = '.*'/launcherVersion = '{{version}}'/\" lib/services/api.dart",
+  "sed -i \"s/String _version = '.*'/String _version = '{{version}}'/\" lib/screens/settings_screen.dart",
+]
+
+post_bump_hooks = [
+  "git add pubspec.yaml lib/services/api.dart lib/screens/settings_screen.dart CHANGELOG.md",
+]
+
 [changelog]
 path = "CHANGELOG.md"
-authors = []
+authors = ["calico"]
+
+[git_hooks]
+
+[commit_types]
+feat = { changelog_title = "Features", bump_minor = true }
+fix = { changelog_title = "Fixes", bump_patch = true }
