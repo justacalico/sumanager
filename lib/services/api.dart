@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import '../models.dart';
 
@@ -14,30 +15,48 @@ class Api {
         'User-Agent': 'SteamUnlocked-Launcher/$launcherVersion',
       };
 
-  static Future<List<CatalogGame>> fetchCatalogPage(int page, {String? search, http.Client? client}) async {
+  static String _uuid() {
+    final r = Random.secure();
+    String h(int n, int w) => r.nextInt(1 << (w * 4)).toRadixString(16).padLeft(w, '0');
+    return '${h(0, 4)}${h(0, 4)}-${h(0, 4)}-4${h(0, 3)}-${(8 + r.nextInt(4)).toRadixString(16)}${h(0, 3)}-${h(0, 4)}${h(0, 4)}${h(0, 4)}';
+  }
+
+  static Future<Map<String, dynamic>> fetchCatalogSync({int? lastSync, http.Client? client}) async {
     final c = client ?? http.Client();
     try {
-      var url = '$suBase/wp-json/launcher/v2/catalog?page=$page&per_page=100';
-      if (search != null && search.isNotEmpty) url += '&search=${Uri.encodeComponent(search)}';
-      final r = await c.get(Uri.parse(url), headers: _headers).timeout(const Duration(seconds: 30));
-      if (r.statusCode != 200) throw Exception('HTTP ${r.statusCode}');
-      final j = jsonDecode(r.body);
-      final list = (j is Map ? j['games'] : j) as List? ?? [];
-      return list.map((g) => CatalogGame.fromJson(g)).toList();
-
+      var url = '$suBase/wp-json/launcher/v2/catalog?run=${_uuid()}';
+      if (lastSync != null && lastSync > 0) url += '&since=$lastSync';
+      final games = <CatalogGame>[];
+      var after = 0;
+      var syncTime = 0;
+      var hasMore = true;
+      var guard = 0;
+      while (hasMore && guard++ < 40) {
+        final r = await c.get(Uri.parse('$url&after=$after'), headers: _headers).timeout(const Duration(seconds: 60));
+        if (r.statusCode != 200) {
+          if (games.isEmpty) throw Exception('HTTP ${r.statusCode}');
+          break;
+        }
+        final j = jsonDecode(r.body);
+        games.addAll((j['games'] as List? ?? []).map((g) => CatalogGame.fromJson(g)));
+        hasMore = j['has_more'] == true;
+        after = j['next_after'] is int ? j['next_after'] : int.tryParse('${j['next_after']}') ?? after;
+        syncTime = j['sync_time'] is int ? j['sync_time'] : int.tryParse('${j['sync_time']}') ?? syncTime;
+      }
+      return {'games': games, 'sync_time': syncTime};
     } finally {
       if (client == null) c.close();
     }
   }
 
   static Future<List<CatalogGame>> fetchCatalog({String? search, http.Client? client}) async {
-    final all = <CatalogGame>[];
-    for (var page = 1; page <= 12; page++) {
-      final batch = await fetchCatalogPage(page, search: search, client: client);
-      all.addAll(batch);
-      if (batch.length < 100) break;
+    final r = await fetchCatalogSync(client: client);
+    var games = r['games'] as List<CatalogGame>;
+    if (search != null && search.isNotEmpty) {
+      final q = search.toLowerCase();
+      games = games.where((g) => g.title.toLowerCase().contains(q)).toList();
     }
-    return all;
+    return games;
   }
 
   static Future<Map<int, int>> fetchPopularity({http.Client? client}) async {
