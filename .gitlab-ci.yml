@@ -10,7 +10,7 @@ test:
     - flutter pub get
     - flutter analyze
     - flutter test --coverage
-    - coverage=$(grep -c 'DA:.*,0' coverage/lcov.info || true) && test "$coverage" -eq 0
+    - coverage=$(grep -c 'DA:[0-9]*,0$' coverage/lcov.info || true) && test "$coverage" -eq 0
 
 release:
   stage: release
