@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.gitlab.httpanimations.sumanager</id>
+  <name>SteamUnlocked Launcher</name>
+  <summary>Browse, download and play catalog games</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0</project_license>
+  <launchable type="desktop-id">com.gitlab.httpanimations.sumanager.desktop</launchable>
+  <description><p>A desktop game launcher for the SteamUnlocked catalog with downloads, extraction and library management.</p></description>
+  <releases><release version="1.0.0" date="2026-10-23"/></releases>
+</component>

@@ -1,0 +1,25 @@
+app-id: com.gitlab.httpanimations.sumanager
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: sumanager
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=host
+  - --share=network
+modules:
+  - name: sumanager
+    buildsystem: simple
+    build-commands:
+      - install -D sumanager /app/bin/sumanager
+      - install -D -m644 assets/icon.png /app/share/icons/hicolor/512x512/apps/com.gitlab.httpanimations.sumanager.png
+      - install -D -m644 linux/resources/sumanager.desktop /app/share/applications/com.gitlab.httpanimations.sumanager.desktop
+      - install -D -m644 packaging/flatpak/com.gitlab.httpanimations.sumanager.metainfo.xml /app/share/metainfo/com.gitlab.httpanimations.sumanager.metainfo.xml
+      - cp -r lib data /app/lib/sumanager/ || true
+    sources:
+      - type: dir
+        path: ../../build/linux/x64/release/bundle

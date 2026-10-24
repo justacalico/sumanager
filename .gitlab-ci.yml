@@ -1,7 +1,7 @@
 default:
   tags: [linux-truenas]
 
-stages: [test, release]
+stages: [test, build, release, deploy]
 
 test:
   stage: test
@@ -24,3 +24,41 @@ release:
     - cargo install cocogitto --locked
     - cog bump --auto
     - git push --follow-tags origin HEAD:master
+
+build-linux:
+  stage: build
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - flutter pub get
+    - flutter build linux --release
+    - tar -czf sumanager-linux-x64.tar.gz -C build/linux/x64/release/bundle .
+  artifacts:
+    paths: [sumanager-linux-x64.tar.gz]
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+
+flatpak:
+  stage: build
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - flutter pub get
+    - flutter build linux --release
+    - ls packaging/flatpak/
+  artifacts:
+    paths: [packaging/flatpak/]
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - cp -r pages public
+  artifacts:
+    paths: [public]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"

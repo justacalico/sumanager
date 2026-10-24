@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'widgets/shell.dart';
 import 'screens/browse.dart';
 import 'screens/downloads.dart';
@@ -60,12 +60,8 @@ class _SuManagerAppState extends State<SuManagerApp> {
       debugShowCheckedModeBanner: false,
       theme: dark,
       locale: _locale,
-      supportedLocales: const [Locale('en'), Locale('en', 'GB'), Locale('zh'), Locale('ru'), Locale('ga')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       home: !Settings.instance.welcomeShown
           ? WelcomeScreen(onDone: () {
               Settings.instance.setWelcomeShown(true);
