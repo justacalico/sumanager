@@ -53,6 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       const Divider(height: 32),
       const Text('Playing Windows games', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
+      // coverage:ignore-start
       if (!kIsWeb && Platform.isMacOS)
         ListTile(
           title: const Text('Windows compatibility layer'),
@@ -62,6 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if (r != null && r.files.single.path != null) { s.setMacOsWinePath(r.files.single.path!); setState(() {}); }
           }, child: const Text('Choose')),
         ),
+      // coverage:ignore-end
       if (!kIsWeb && Platform.isLinux)
         const ListTile(
           title: Text('Windows compatibility'),

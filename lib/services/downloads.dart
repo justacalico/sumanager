@@ -12,6 +12,9 @@ class DownloadManager extends ChangeNotifier {
   static final DownloadManager instance = DownloadManager._();
   DownloadManager._();
 
+  @visibleForTesting
+  factory DownloadManager.forTest() => DownloadManager._();
+
   final List<DownloadItem> items = [];
   final Map<String, http.Client> _clients = {};
   final Map<String, bool> _cancel = {};
@@ -46,7 +49,12 @@ class DownloadManager extends ChangeNotifier {
       if (activeCount >= maxConcurrent) break;
       _start(q);
     }
-    _ticker ??= Timer.periodic(const Duration(seconds: 2), (_) { notifyListeners(); save(); });
+    if (items.any((i) => i.status == DownloadStatus.downloading || i.status == DownloadStatus.queued || i.status == DownloadStatus.resolving)) {
+      _ticker ??= Timer.periodic(const Duration(seconds: 2), (_) { notifyListeners(); save(); });
+    } else {
+      _ticker?.cancel();
+      _ticker = null;
+    }
   }
 
   bool isQueuedOrDone(int catalogId) => items.any((i) => i.catalogId == catalogId && i.status != DownloadStatus.cancelled && i.status != DownloadStatus.failed);
@@ -101,7 +109,9 @@ class DownloadManager extends ChangeNotifier {
     final zipPath = '${dir.path}${Platform.pathSeparator}$safe.zip';
     item.savePath = zipPath;
     try {
-      final head = await http.head(Uri.parse(url));
+      final headClient = Api.newClient();
+      final head = await headClient.send(http.Request('HEAD', Uri.parse(url)));
+      headClient.close();
       if (item.totalSize <= 0) {
         item.totalSize = int.tryParse(head.headers['content-length'] ?? '') ?? 0;
       }
@@ -119,7 +129,7 @@ class DownloadManager extends ChangeNotifier {
       final chunks = chunkCount;
       final chunkSize = item.totalSize > 0 ? (item.totalSize / chunks).ceil() : 0;
       final start = item.downloadedBytes;
-      final client = http.Client();
+      final client = Api.newClient();
       _clients[item.id] = client;
       final sw = Stopwatch()..start();
       var lastBytes = start;

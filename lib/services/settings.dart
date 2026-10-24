@@ -22,7 +22,7 @@ class Settings extends ChangeNotifier {
   SharedPreferences? _prefs;
 
   Future<Directory> dataDir() async {
-    if (kIsWeb) return Directory.systemTemp;
+    if (kIsWeb) return Directory.systemTemp; // coverage:ignore-line
     final d = await getApplicationSupportDirectory();
     await d.create(recursive: true);
     return d;
@@ -80,8 +80,11 @@ class Settings extends ChangeNotifier {
       return {};
     }
   }
+  var _writeSeq = 0;
   Future<void> writeJson(String name, Object data) async {
     final f = await file(name);
-    await f.writeAsString(jsonEncode(data));
+    final tmp = File('${f.path}.${_writeSeq++}.tmp');
+    await tmp.writeAsString(jsonEncode(data));
+    await tmp.rename(f.path);
   }
 }

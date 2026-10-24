@@ -196,7 +196,7 @@ class GameDialog extends StatelessWidget {
       title: Text(game.title),
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (game.coverUrl.isNotEmpty)
-          ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.network(game.coverUrl, height: 180, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const SizedBox())),
+          ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.network(game.coverUrl, height: 180, width: 320, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const SizedBox())),
         const SizedBox(height: 12),
         Text('Size: ${GameCard.fmtBytes(game.fileSize)}'),
         if (game.categories.isNotEmpty) Text('Categories: ${game.categories.join(', ')}'),

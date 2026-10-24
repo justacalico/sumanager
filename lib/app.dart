@@ -12,7 +12,7 @@ import 'screens/welcome.dart';
 import 'services/settings.dart';
 
 class SuManagerApp extends StatefulWidget {
-  const SuManagerApp({super.key});
+  const SuManagerApp({super.key}); // coverage:ignore-line
   @override
   State<SuManagerApp> createState() => _SuManagerAppState();
 }

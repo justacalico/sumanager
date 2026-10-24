@@ -9,6 +9,9 @@ class Api {
   static const launcherKey = 'su-launcher-v1-8f3k9x2m7pqw4';
   static const launcherVersion = '0.4.2';
 
+  static http.Client Function()? clientFactory;
+  static http.Client newClient() => clientFactory?.call() ?? http.Client();
+
   static Map<String, String> get _headers => {
         'X-Launcher-Key': launcherKey,
         'X-Launcher-Version': launcherVersion,
@@ -22,7 +25,7 @@ class Api {
   }
 
   static Future<Map<String, dynamic>> fetchCatalogSync({int? lastSync, http.Client? client}) async {
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     try {
       var url = '$suBase/wp-json/launcher/v2/catalog?run=${_uuid()}';
       if (lastSync != null && lastSync > 0) url += '&since=$lastSync';
@@ -60,7 +63,7 @@ class Api {
   }
 
   static Future<Map<int, int>> fetchPopularity({http.Client? client}) async {
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     try {
       final r = await c.get(Uri.parse('$suBase/wp-json/launcher/v1/popularity'), headers: _headers).timeout(const Duration(seconds: 15));
       if (r.statusCode != 200) return {};
@@ -84,7 +87,7 @@ class Api {
   }
 
   static Future<String?> resolveToken(int catalogId, String slug, {String? bearer, http.Client? client}) async {
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     try {
       final h = {..._headers, 'Content-Type': 'application/json'};
       if (bearer != null) h['Authorization'] = 'Bearer $bearer';
@@ -104,7 +107,7 @@ class Api {
   }
 
   static Future<ProStatus> fetchAccount(String bearer, {http.Client? client}) async {
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     try {
       final r = await c.get(Uri.parse('$uhBase/api/launcher/me'), headers: {..._headers, 'Authorization': 'Bearer $bearer'}).timeout(const Duration(seconds: 15));
       if (r.statusCode != 200) return const ProStatus();
@@ -125,7 +128,7 @@ class Api {
 
   static Future<ConnectivityResult> connectivityTest({http.Client? client}) async {
     final res = ConnectivityResult();
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     final sw = Stopwatch()..start();
     try {
       res.dnsOk = true;
@@ -145,7 +148,7 @@ class Api {
   }
 
   static Future<bool> submitBugReport(String description, {String? diagnostics, http.Client? client}) async {
-    final c = client ?? http.Client();
+    final c = client ?? newClient();
     try {
       final r = await c.post(
         Uri.parse('$uhBase/api/launcher/bug-report'),

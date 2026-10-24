@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models.dart';
+import 'api.dart';
 
 class UpdateChecker {
   static const releasesApi = 'https://gitlab.com/api/v4/projects/HttpAnimations%2Fsumanager/releases?per_page=100&order_by=released_at&sort=desc';
@@ -15,7 +16,7 @@ class UpdateChecker {
   }
 
   static Future<UpdateInfo?> _doCheck(String currentVersion, http.Client? client) async {
-    final c = client ?? http.Client();
+    final c = client ?? Api.newClient();
     try {
       final r = await c.get(Uri.parse(releasesApi)).timeout(const Duration(seconds: 15));
       if (r.statusCode != 200) return null;

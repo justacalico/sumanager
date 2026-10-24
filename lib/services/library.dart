@@ -7,6 +7,9 @@ class LibraryStore extends ChangeNotifier {
   static final LibraryStore instance = LibraryStore._();
   LibraryStore._();
 
+  @visibleForTesting
+  factory LibraryStore.forTest() => LibraryStore._();
+
   final List<LibraryGame> games = [];
   final List<GameCollection> collections = [];
   final Set<String> favorites = {};
@@ -126,7 +129,7 @@ class GameScanner {
 
   static bool isGameExe(String name) {
     final n = name.toLowerCase();
-    if (!n.endsWith('.exe') && !n.endsWith('.bat') && !n.endsWith('.sh') && !n.endsWith('')) return false;
+    if (!n.endsWith('.exe') && !n.endsWith('.bat') && !n.endsWith('.sh') && n.contains('.')) return false;
     return !skipNames.any((s) => n.contains(s));
   }
 

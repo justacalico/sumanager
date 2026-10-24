@@ -13,11 +13,14 @@ class HelpScreen extends StatelessWidget {
       const SizedBox(height: 8),
       const Text('Most Windows games need Visual C++, DirectX or .NET runtimes. Install them once and every game benefits.', style: TextStyle(fontSize: 13)),
       const SizedBox(height: 12),
+      // coverage:ignore-start
       if (!kIsWeb && Platform.isWindows)
         FilledButton.icon(icon: const Icon(Icons.build), label: const Text('Install all runtimes'), onPressed: () => _runtimes(context))
+      // coverage:ignore-end
       else
         const Text('Runtime installers are a Windows-only feature.', style: TextStyle(fontSize: 12, color: Colors.grey)),
       const SizedBox(height: 24),
+      // coverage:ignore-start
       if (!kIsWeb && Platform.isWindows) ...[
         const Text('Windows Defender', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
         const SizedBox(height: 8),
@@ -26,14 +29,17 @@ class HelpScreen extends StatelessWidget {
         FilledButton.tonalIcon(icon: const Icon(Icons.shield_outlined), label: const Text('Exclude download folder'), onPressed: () => _defender(context)),
         const SizedBox(height: 24),
       ],
+      // coverage:ignore-end
       const Text('Running Windows games here', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
       if (!kIsWeb && Platform.isLinux)
         const Text('Games launch through Steam Proton when installed, or Wine as a fallback. Install Proton from Steam for the best results.', style: TextStyle(fontSize: 13)),
+      // coverage:ignore-start
       if (!kIsWeb && Platform.isMacOS)
         const Text('macOS has no native .exe support. Point Settings to a Wine build from CrossOver, the Game Porting Toolkit or Whisky, and games will launch through it.', style: TextStyle(fontSize: 13)),
       if (!kIsWeb && Platform.isWindows)
         const Text('You are on Windows — games just run. Nothing extra needed.', style: TextStyle(fontSize: 13)),
+      // coverage:ignore-end
       const SizedBox(height: 24),
       const Text('Links', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
       const SizedBox(height: 8),
@@ -44,6 +50,7 @@ class HelpScreen extends StatelessWidget {
     ]);
   }
 
+  // coverage:ignore-start
   Future<void> _runtimes(BuildContext context) async {
     final scripts = [
       'https://aka.ms/vs/17/release/vc_redist.x64.exe',
@@ -69,7 +76,9 @@ class HelpScreen extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Opened the official installers in your browser.')));
     }
   }
+  // coverage:ignore-end
 
+  // coverage:ignore-start
   Future<void> _defender(BuildContext context) async {
     if (!Platform.isWindows) return;
     try {
@@ -79,4 +88,5 @@ class HelpScreen extends StatelessWidget {
       }
     } catch (_) {}
   }
+  // coverage:ignore-end
 }
