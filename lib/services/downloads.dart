@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -200,8 +199,7 @@ class DownloadManager extends ChangeNotifier {
     item.status = DownloadStatus.extracting;
     notifyListeners();
     try {
-      final parent = item.savePath.substring(0, item.savePath.lastIndexOf(Platform.pathSeparator));
-      final dest = item.savePath.replaceAll(RegExp(r'\.zip$', ''), '');
+      final dest = item.savePath.replaceAll(RegExp(r'\.zip$'), '');
       final bytes = await File(item.savePath).readAsBytes();
       final archive = ZipDecoder().decodeBytes(bytes);
       item.extractTotal = archive.length;

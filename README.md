@@ -1,17 +1,11 @@
-# sumanager
+# SteamUnlocked Launcher
 
-A new Flutter project.
+Browse, download, extract and organize your games in one place.
 
-## Getting Started
+- Browse the catalog with search, category and size filters, and sorting by recently added, most viewed, name or size
+- Resumable parallel-chunk downloads with a queue, pause/resume and automatic extraction
+- A library to play, organize into collections, favorite, scan existing folders and uninstall games
+- UploadHaven account sign-in for Pro perks: faster chunks and up to 5 simultaneous downloads
+- Runs on Windows, Linux and macOS. Linux games launch through Proton/Wine; on macOS you point the app at a Wine build from CrossOver, the Game Porting Toolkit or Whisky.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Built with Flutter.

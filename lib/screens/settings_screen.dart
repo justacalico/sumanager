@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ListTile(
         title: Text('Simultaneous downloads: ${s.maxConcurrent}'),
         subtitle: const Text('Pro members can run up to 5 at once', style: TextStyle(fontSize: 12)),
-        trailing: SizedBox(width: 200, child: Slider(value: s.maxConcurrent.toDouble(), min: 1, max: 5, divisions: 4, onChanged: (v) { s.setMaxConcurrent(v.round()); dm.notifyListeners(); setState(() {}); })),
+        trailing: SizedBox(width: 200, child: Slider(value: s.maxConcurrent.toDouble(), min: 1, max: 5, divisions: 4, onChanged: (v) { dm.setMaxConcurrent(v.round()); setState(() {}); })),
       ),
       SwitchListTile(title: const Text('Extract automatically'), value: s.autoExtract, onChanged: (v) => s.setAutoExtract(v)),
       SwitchListTile(title: const Text('Delete archive after extraction'), value: s.removeWhenDone, onChanged: (v) => s.setRemoveWhenDone(v)),

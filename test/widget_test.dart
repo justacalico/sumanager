@@ -23,7 +23,6 @@ void main() {
   });
 
   testWidgets('game card renders', (t) async {
-    final g = CatalogGame(id: 1, slug: 's', title: 'Test Game', coverUrl: '', fileSize: 1000);
     await t.pumpWidget(const MaterialApp(home: Scaffold(body: Text('ok'))));
     expect(find.text('ok'), findsOneWidget);
   });

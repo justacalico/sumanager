@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../models.dart';
 import 'settings.dart';
@@ -13,6 +12,8 @@ class LibraryStore extends ChangeNotifier {
   final Set<String> favorites = {};
   final List<LibraryGame> customGames = [];
   bool _loaded = false;
+
+  void touch() => notifyListeners();
 
   Future<void> load() async {
     if (_loaded) return;
@@ -60,7 +61,7 @@ class LibraryStore extends ChangeNotifier {
   }
 
   void setFavorite(String key, bool on) {
-    if (on) favorites.add(key); else favorites.remove(key);
+    if (on) { favorites.add(key); } else { favorites.remove(key); }
     notifyListeners();
     _save();
   }
@@ -119,7 +120,7 @@ class GameScanner {
 
   static String normalizeTitle(String folder) {
     var t = folder.replaceAll(RegExp(r'[._]+'), ' ').trim();
-    t = t.replaceAll(RegExp(r'(?i)\b(free download|repack|fitgirl|dodi|full version|all dlc|incl\.?.*|v[\d.]+.*|digital deluxe edition|game of the year edition|deluxe edition|complete edition|definitive edition|ultimate edition|gold edition|special edition|standard edition|goty edition|update.*|multi\d+|prophet|codex|skidrow|reloaded|plaza|elamigos|gog|steamrip|crack.*)\b'), ' ');
+    t = t.replaceAll(RegExp(r'\b(free download|repack|fitgirl|dodi|full version|all dlc|incl\.?.*|v[\d.]+.*|digital deluxe edition|game of the year edition|deluxe edition|complete edition|definitive edition|ultimate edition|gold edition|special edition|standard edition|goty edition|update.*|multi\d+|prophet|codex|skidrow|reloaded|plaza|elamigos|gog|steamrip|crack.*)\b', caseSensitive: false), ' ');
     return t.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 

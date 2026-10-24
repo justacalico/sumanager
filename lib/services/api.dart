@@ -22,8 +22,9 @@ class Api {
       final r = await c.get(Uri.parse(url), headers: _headers).timeout(const Duration(seconds: 30));
       if (r.statusCode != 200) throw Exception('HTTP ${r.statusCode}');
       final j = jsonDecode(r.body);
-      final games = (j['games'] as List? ?? j is List ? (j is List ? j : []) : []).map((g) => CatalogGame.fromJson(g)).toList();
-      return games;
+      final list = (j is Map ? j['games'] : j) as List? ?? [];
+      return list.map((g) => CatalogGame.fromJson(g)).toList();
+
     } finally {
       if (client == null) c.close();
     }

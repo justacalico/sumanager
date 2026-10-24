@@ -1,6 +1,5 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'widgets/shell.dart';
 import 'screens/browse.dart';
 import 'screens/downloads.dart';

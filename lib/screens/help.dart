@@ -73,7 +73,7 @@ class HelpScreen extends StatelessWidget {
   Future<void> _defender(BuildContext context) async {
     if (!Platform.isWindows) return;
     try {
-      await Process.run('powershell', ['-Command', 'Add-MpPreference -ExclusionPath (Get-Content "$env:APPDATA\\sumanager\\download_path.txt" -ErrorAction SilentlyContinue)']);
+      await Process.run('powershell', ['-Command', 'Add-MpPreference -ExclusionPath (Get-Content "\$env:APPDATA\\sumanager\\download_path.txt" -ErrorAction SilentlyContinue)']);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Exclusion request sent to Windows Defender.')));
       }

@@ -1,10 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models.dart';
 import '../services/library.dart';
 import '../services/runner.dart';
-import '../services/settings.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -113,7 +113,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     final r = await FilePicker.platform.pickFiles(dialogTitle: 'Choose the game executable');
     if (r != null && r.files.single.path != null) {
       g.exePath = r.files.single.path!;
-      LibraryStore.instance.notifyListeners();
+      LibraryStore.instance.touch();
     }
   }
 

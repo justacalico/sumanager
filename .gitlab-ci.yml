@@ -1,0 +1,10 @@
+default:
+  tags: [linux-truenas]
+stages: [test]
+test:
+  stage: test
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - flutter pub get
+    - flutter analyze
+    - flutter test --coverage
