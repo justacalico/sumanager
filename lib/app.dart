@@ -48,6 +48,7 @@ class _SuManagerAppState extends State<SuManagerApp> {
   @override
   Widget build(BuildContext context) {
     final dark = ThemeData(
+      fontFamily: 'Noto Sans',
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5B8DEF), brightness: Brightness.dark),
       scaffoldBackgroundColor: const Color(0xFF141419),

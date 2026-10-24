@@ -36,7 +36,7 @@ void main() {
   late Directory tmp;
 
   setUpAll(() async {
-    setupTestEnv();
+    await setupTestEnv();
     tmp = Directory.systemTemp.createTempSync('dl');
     await Settings.instance.load();
     Settings.instance.setDownloadPath(tmp.path);

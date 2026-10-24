@@ -6,7 +6,7 @@ import 'helpers.dart';
 
 void main() {
   setUpAll(() async {
-    setupTestEnv();
+    await setupTestEnv();
     await Settings.instance.load();
   });
 

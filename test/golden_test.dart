@@ -19,6 +19,7 @@ import 'package:sumanager/services/settings.dart';
 import 'helpers.dart';
 
 ThemeData theme() => ThemeData(
+      fontFamily: 'Noto Sans',
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5B8DEF), brightness: Brightness.dark),
       scaffoldBackgroundColor: const Color(0xFF141419),
@@ -35,7 +36,7 @@ Future<void> snap(WidgetTester t, Widget child, String name) async {
 
 void main() {
   setUpAll(() async {
-    setupTestEnv();
+    await setupTestEnv();
     await Settings.instance.load();
     Api.clientFactory = () => MockClient((req) async {
           if (req.url.path.contains('catalog')) {

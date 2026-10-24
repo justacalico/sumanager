@@ -40,13 +40,13 @@ Future<void> tapAsync(WidgetTester t, Finder f) async {
 void _noop(int _) {}
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(brightness: Brightness.dark, useMaterial3: true),
+      theme: ThemeData(fontFamily: 'Noto Sans', brightness: Brightness.dark, useMaterial3: true),
       home: Scaffold(body: child),
     );
 
 void main() {
   setUpAll(() async {
-    setupTestEnv();
+    await setupTestEnv();
     await Settings.instance.load();
     Api.clientFactory = () => MockClient((req) async {
           if (req.url.path.contains('catalog')) {

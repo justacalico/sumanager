@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:url_launcher_platform_interface/link.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/painting.dart';
 
 Directory? _tmp;
 bool _max = false;
@@ -100,9 +101,14 @@ class FakeUrlLauncher extends UrlLauncherPlatform {
   Future<void> closeWebView() async {}
 }
 
-void setupTestEnv() {
+Future<void> setupTestEnv() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = FakeHttpOverrides();
+  final loader = FontLoader('Noto Sans')
+    ..addFont(rootBundle.load('assets/fonts/NotoSans-Regular.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/NotoSans-Medium.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/NotoSans-Bold.ttf'));
+  await loader.load();
   SharedPreferences.setMockInitialValues({});
   UrlLauncherPlatform.instance = FakeUrlLauncher();
   FilePicker.platform = FakeFilePicker();
