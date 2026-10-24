@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=SteamUnlocked Launcher
+Comment=Browse, download and play catalog games
+Exec=sumanager
+Icon=sumanager
+Type=Application
+Categories=Game;
+Terminal=false
